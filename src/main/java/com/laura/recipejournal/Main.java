@@ -1,3 +1,6 @@
+package com.laura.recipejournal;
+import com.laura.recipejournal.model.*;
+
 public class Main {
     public static void main(String[] args) {
         Macros flourMacros = new Macros(1, 10, 76);

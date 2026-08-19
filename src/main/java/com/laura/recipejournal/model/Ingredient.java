@@ -1,3 +1,5 @@
+package com.laura.recipejournal.model;
+
 public class Ingredient {
     private String name;
     private Macros macrosPerUnit;

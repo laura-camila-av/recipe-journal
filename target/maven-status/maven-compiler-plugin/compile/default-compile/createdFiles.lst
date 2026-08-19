@@ -1,0 +1,8 @@
+com\laura\recipejournal\Main.class
+com\laura\recipejournal\model\Collection.class
+com\laura\recipejournal\model\Ingredient.class
+com\laura\recipejournal\model\Recipe.class
+com\laura\recipejournal\model\Quantity.class
+com\laura\recipejournal\model\Profile.class
+com\laura\recipejournal\model\RecipeIngredient.class
+com\laura\recipejournal\model\Macros.class

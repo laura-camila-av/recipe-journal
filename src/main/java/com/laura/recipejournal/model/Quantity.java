@@ -1,3 +1,5 @@
+package com.laura.recipejournal.model;
+
 public class Quantity {
     private double amount;
     private String unit;

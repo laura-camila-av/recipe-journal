@@ -1,3 +1,5 @@
+package com.laura.recipejournal.model;
+
 public class RecipeIngredient {
     private Ingredient ingredient;
     private Quantity quantity;

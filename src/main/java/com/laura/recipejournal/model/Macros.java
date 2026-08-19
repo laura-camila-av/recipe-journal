@@ -1,3 +1,5 @@
+package com.laura.recipejournal.model;
+
 public class Macros {
     private double fat;
     private double protein;

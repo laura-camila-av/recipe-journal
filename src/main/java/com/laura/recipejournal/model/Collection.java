@@ -1,3 +1,5 @@
+package com.laura.recipejournal.model;
+
 import java.util.ArrayList;
 import java.util.List;
 
