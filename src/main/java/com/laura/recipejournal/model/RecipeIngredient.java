@@ -25,9 +25,19 @@ public class RecipeIngredient {
         this.quantity = quantity;
     }
 
+    public Macros calculateTotalMacros() {
+        Macros perUnit = ingredient.getMacrosPerUnit();
+        double qty = quantity.getAmount();
+
+        double totalFat = perUnit.getFat() * qty;
+        double totalProtein = perUnit.getProtein() * qty;
+        double totalCarbohydrate = perUnit.getCarbohydrate() * qty;
+
+    return new Macros(totalFat, totalProtein, totalCarbohydrate);
+    }
+
     public double calculateTotalCalories() {
-        double caloriesPerUnit = ingredient.getMacrosPerUnit().calculateCaloriesPerUnit();
-        return caloriesPerUnit * quantity.getAmount();
+        return calculateTotalMacros().calculateCaloriesPerUnit();
     }
 
     @Override

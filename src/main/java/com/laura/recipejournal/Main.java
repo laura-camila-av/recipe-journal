@@ -3,27 +3,34 @@ import com.laura.recipejournal.model.*;
 
 public class Main {
     public static void main(String[] args) {
-        Macros flourMacros = new Macros(1, 10, 76);
-        Ingredient flour = new Ingredient("Flour", flourMacros);
-        Quantity amount = new Quantity(2, "units");
-        RecipeIngredient recipeFlour = new RecipeIngredient(flour, amount);
 
-        Recipe pancakes = new Recipe("Pancakes", "2026-08-19");
-        pancakes.addInstruction("Mix dry ingredients.");
-        pancakes.addInstruction("Add wet ingredients and whisk.");
-        pancakes.addRecipeIngredient(recipeFlour);
+        Recipe porridge = new Recipe("porridge", "2026-08-19");
+        Macros bananaMacros = new Macros(0.3, 1.3, 27);
+        Ingredient banana = new Ingredient("Banana", bananaMacros);
+        Quantity bananaAmount = new Quantity(120, "g");
+        RecipeIngredient bananaEntry = new RecipeIngredient(banana, bananaAmount);
 
-        System.out.println(pancakes);
-        System.out.println(pancakes.getInstructions());
-        System.out.println("Total calories: " + pancakes.calculateTotalCalories());
-    
-        Collection desserts = new Collection("Desserts");
-        desserts.addRecipe(pancakes);
-        System.out.println(desserts);
+        Macros oatsMacros = new Macros(7, 13, 66);
+        Ingredient oats = new Ingredient("Oats", oatsMacros);
+        Quantity oatsAmount = new Quantity(50, "g");
+        RecipeIngredient oatsEntry = new RecipeIngredient(oats, oatsAmount);
 
-        Profile laura = new Profile("Laura");
-        laura.addCollection(desserts);
-        System.out.println(laura);
+        Macros milkMacros = new Macros(3, 3, 5);
+        Ingredient milk = new Ingredient("Milk", milkMacros);
+        Quantity milkAmount = new Quantity(150, "ml");
+        RecipeIngredient milkEntry = new RecipeIngredient(milk, milkAmount);
+
+        porridge.addRecipeIngredient(bananaEntry);
+        porridge.addRecipeIngredient(oatsEntry);
+        porridge.addRecipeIngredient(milkEntry);
+
+        Macros totalMacros = porridge.calculateTotalMacros();
+        System.out.println(totalMacros);
+
+        double totalCalories = porridge.calculateTotalCalories();
+        System.out.println(totalCalories);
+
+
     
     }
 }

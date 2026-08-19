@@ -62,6 +62,21 @@ public class Recipe {
         recipeIngredients.remove(recipeIngredient);
     }
 
+    public Macros calculateTotalMacros() {
+        double totalFat = 0;
+        double totalProtein = 0;
+        double totalCarbohydrate = 0;
+
+        for (RecipeIngredient ri : recipeIngredients) {
+            Macros m = ri.calculateTotalMacros();
+            totalFat += m.getFat();
+            totalProtein += m.getProtein();
+            totalCarbohydrate += m.getCarbohydrate();
+    }
+
+    return new Macros(totalFat, totalProtein, totalCarbohydrate);
+    }
+
     public double calculateTotalCalories() {
         double total = 0;
         for (RecipeIngredient ri : recipeIngredients) {
