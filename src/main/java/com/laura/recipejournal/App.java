@@ -7,10 +7,10 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.ScrollPane;
 
 import java.util.List;
 
-import javax.swing.text.TableView;
 import javafx.scene.image.ImageView;
 
 import com.laura.recipejournal.model.Ingredient;
@@ -96,8 +96,15 @@ public class App extends Application {
         VBox leftColumn = new VBox();
         leftColumn.getChildren().addAll(macros, ingredients);
 
+        ScrollPane leftScrollPane = new ScrollPane();
+        leftScrollPane.setContent(leftColumn);
+
+        ScrollPane rightScrollPane = new ScrollPane();
+        rightScrollPane.setContent(rightColumn);
+
         HBox recipePage = new HBox();
-        recipePage.getChildren().addAll(leftColumn, rightColumn);
+        recipePage.getChildren().addAll(leftScrollPane, rightScrollPane);
+
         
         Scene scene = new Scene(recipePage, 600, 400);
         primaryStage.setTitle("Recipe Journal");
