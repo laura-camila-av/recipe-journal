@@ -55,7 +55,7 @@ Requires JDK 23 and Maven installed and on your system PATH.
 
 ## Current Status
 
-This is an actively in-progress learning project — the core recipe display, editing, and persistence loop is fully working, but it's a single hardcoded recipe rather than a full multi-recipe app yet.
+This is an actively in-progress learning project. The core recipe display, editing, and persistence loop is fully working, but it's a single hardcoded recipe rather than a full multi-recipe app yet. I am to complete this by the end of August.
 
 **Done:**
 - Full OOP model layer, composed and tested independently of the UI
@@ -69,7 +69,7 @@ This is an actively in-progress learning project — the core recipe display, ed
 - Editable ingredients table (`TableView`), to replace the current read-only ingredients list
 - Editable notes, backed by the model (currently static placeholder text)
 - Collections — grouping recipes into named sets
-- Visual polish pass (this project has intentionally prioritised functionality over styling so far)
+- Polish up the UI
 
 ## License
 
