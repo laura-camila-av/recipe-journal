@@ -34,6 +34,33 @@ public class App extends Application {
         coverImageView.setFitHeight(200);
         coverImageView.setPreserveRatio(true);
 
+        File savedFile = new File("porridge.json");
+        Recipe porridge;
+
+        Macros bananaMacros = new Macros(0.3, 1.3, 27);
+        Ingredient banana = new Ingredient("Banana", bananaMacros);
+        Quantity bananaAmount = new Quantity(120, "g");
+        RecipeIngredient bananaEntry = new RecipeIngredient(banana, bananaAmount);
+
+        Macros oatsMacros = new Macros(7, 13, 66);
+        Ingredient oats = new Ingredient("Oats", oatsMacros);
+        Quantity oatsAmount = new Quantity(50, "g");
+        RecipeIngredient oatsEntry = new RecipeIngredient(oats, oatsAmount);
+
+        Macros milkMacros = new Macros(3, 3, 5);
+        Ingredient milk = new Ingredient("Milk", milkMacros);
+        Quantity milkAmount = new Quantity(150, "ml");
+        RecipeIngredient milkEntry = new RecipeIngredient(milk, milkAmount);
+
+        if (savedFile.exists()) {
+            porridge = RecipeStorage.load("porridge.json");
+        } else {
+            porridge = new Recipe("Porridge", "2026-08-19");
+            porridge.addRecipeIngredient(bananaEntry);
+            porridge.addRecipeIngredient(oatsEntry);
+            porridge.addRecipeIngredient(milkEntry);
+        }
+
         Label coverImageLabel = new Label("Cover Image");
 
         Button chooseImageButton = new Button("Choose Image");
@@ -71,36 +98,14 @@ public class App extends Application {
         VBox rightColumn = new VBox();
         rightColumn.getChildren().addAll(imageBox, notes);
         //NEWWWW
-
-        Macros bananaMacros = new Macros(0.3, 1.3, 27);
-        Ingredient banana = new Ingredient("Banana", bananaMacros);
-        Quantity bananaAmount = new Quantity(120, "g");
-        RecipeIngredient bananaEntry = new RecipeIngredient(banana, bananaAmount);
-
-        Macros oatsMacros = new Macros(7, 13, 66);
-        Ingredient oats = new Ingredient("Oats", oatsMacros);
-        Quantity oatsAmount = new Quantity(50, "g");
-        RecipeIngredient oatsEntry = new RecipeIngredient(oats, oatsAmount);
-
-        Macros milkMacros = new Macros(3, 3, 5);
-        Ingredient milk = new Ingredient("Milk", milkMacros);
-        Quantity milkAmount = new Quantity(150, "ml");
-        RecipeIngredient milkEntry = new RecipeIngredient(milk, milkAmount);
-
         VBox ingredients = new VBox();
         List<RecipeIngredient> porridgeIngredients = List.of(bananaEntry, oatsEntry, milkEntry);
 
 
-        for (RecipeIngredient ri : porridgeIngredients) {
+        for (RecipeIngredient ri : porridge.getRecipeIngredients()) {
             Label label = new Label(ri.toString());
             ingredients.getChildren().add(label);
         }
-
-        Recipe porridge = new Recipe("Porridge", "2026-08-19");
-
-        porridge.addRecipeIngredient(bananaEntry);
-        porridge.addRecipeIngredient(oatsEntry);
-        porridge.addRecipeIngredient(milkEntry);
 
         Button publishButton = new Button("Publish");
 
@@ -168,11 +173,12 @@ public class App extends Application {
         });
 
         nameTextField.setOnAction(event -> {
-            nameLabel.setText(nameTextField.getText());
+            porridge.setName(nameTextField.getText());
+            nameLabel.setText(porridge.getName());
             nameTextField.setVisible(false);
             nameLabel.setVisible(true);
         });
-
+        
         VBox appRoot = new VBox();
         appRoot.getChildren().addAll(nameEditPane, recipePage, publishButton);
 
