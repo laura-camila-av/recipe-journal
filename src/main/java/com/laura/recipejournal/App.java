@@ -9,7 +9,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.stage.FileChooser;
+import java.io.File;
 
+import java.io.File;
 import java.util.List;
 
 import javafx.scene.image.ImageView;
@@ -32,8 +37,25 @@ public class App extends Application {
 
         Label coverImageLabel = new Label("Cover Image");
 
+        Button chooseImageButton = new Button("Choose Image");
+
+        chooseImageButton.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Choose Cover Image");
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+            );
+
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+
+        if (selectedFile != null) {
+            Image image = new Image(selectedFile.toURI().toString());
+            coverImageView.setImage(image);
+        }
+        });
+
         VBox imageBox = new VBox();
-        imageBox.getChildren().addAll(coverImageLabel, coverImageView);
+        imageBox.getChildren().addAll(coverImageLabel, coverImageView, chooseImageButton);
 
         List<String> porridgeNotes = List.of(
             "Notes notes notes xxx xxxxx xxx",
