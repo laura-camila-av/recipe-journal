@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 
 import java.util.List;
 
@@ -79,6 +80,26 @@ public class App extends Application {
         porridge.addRecipeIngredient(oatsEntry);
         porridge.addRecipeIngredient(milkEntry);
 
+        Label instructionsLabel = new Label(porridge.getInstructions());
+        TextField instructionsTextField = new TextField();
+        instructionsTextField.setVisible(false);
+
+        StackPane instructionsEditPane = new StackPane();
+        instructionsEditPane.getChildren().addAll(instructionsLabel, instructionsTextField);
+
+        instructionsLabel.setOnMouseClicked(event -> {
+        instructionsTextField.setText(instructionsLabel.getText());
+        instructionsTextField.setVisible(true);
+        instructionsLabel.setVisible(false);
+        });
+
+        instructionsTextField.setOnAction(event -> {
+            porridge.editInstruction(instructionsTextField.getText());
+            instructionsLabel.setText(porridge.getInstructions());
+            instructionsTextField.setVisible(false);
+            instructionsLabel.setVisible(true);
+        });
+
         Macros totalMacros = porridge.calculateTotalMacros();
 
         HBox macros = new HBox();
@@ -94,7 +115,7 @@ public class App extends Application {
         );
 
         VBox leftColumn = new VBox();
-        leftColumn.getChildren().addAll(macros, ingredients);
+        leftColumn.getChildren().addAll(macros, instructionsEditPane, ingredients);
 
         ScrollPane leftScrollPane = new ScrollPane();
         leftScrollPane.setContent(leftColumn);
@@ -105,8 +126,29 @@ public class App extends Application {
         HBox recipePage = new HBox();
         recipePage.getChildren().addAll(leftScrollPane, rightScrollPane);
 
-        
-        Scene scene = new Scene(recipePage, 600, 400);
+        Label nameLabel = new Label(porridge.getName());
+        TextField nameTextField = new TextField();
+        nameTextField.setVisible(false);
+
+        StackPane nameEditPane = new StackPane();
+        nameEditPane.getChildren().addAll(nameLabel, nameTextField);
+
+        nameLabel.setOnMouseClicked(event -> {
+            nameTextField.setText(nameLabel.getText());
+            nameTextField.setVisible(true);
+            nameLabel.setVisible(false);
+        });
+
+        nameTextField.setOnAction(event -> {
+            nameLabel.setText(nameTextField.getText());
+            nameTextField.setVisible(false);
+            nameLabel.setVisible(true);
+        });
+
+        VBox appRoot = new VBox();
+        appRoot.getChildren().addAll(nameEditPane, recipePage);
+
+        Scene scene = new Scene(appRoot, 900, 500);
         primaryStage.setTitle("Recipe Journal");
         primaryStage.setScene(scene);
         primaryStage.show();
