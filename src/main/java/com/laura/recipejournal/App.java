@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 import javax.swing.text.TableView;
+import javafx.scene.image.ImageView;
 
 import com.laura.recipejournal.model.Ingredient;
 import com.laura.recipejournal.model.Macros;
@@ -22,6 +23,32 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        //NEWWWW
+        ImageView coverImageView = new ImageView();
+        coverImageView.setFitWidth(300);
+        coverImageView.setFitHeight(200);
+        coverImageView.setPreserveRatio(true);
+
+        Label coverImageLabel = new Label("Cover Image");
+
+        VBox imageBox = new VBox();
+        imageBox.getChildren().addAll(coverImageLabel, coverImageView);
+
+        List<String> porridgeNotes = List.of(
+            "Notes notes notes xxx xxxxx xxx",
+            "Notes notes notes xxx xxxxx xxx",
+            "Notes notes notes xxx xxxxx xxx"
+        );
+
+        VBox notes = new VBox();
+        for (String note : porridgeNotes) {
+            Label noteLabel = new Label("• " + note);
+            notes.getChildren().add(noteLabel);
+        }
+
+        VBox rightColumn = new VBox();
+        rightColumn.getChildren().addAll(imageBox, notes);
+        //NEWWWW
 
         Macros bananaMacros = new Macros(0.3, 1.3, 27);
         Ingredient banana = new Ingredient("Banana", bananaMacros);
@@ -55,7 +82,7 @@ public class App extends Application {
         Macros totalMacros = porridge.calculateTotalMacros();
 
         HBox macros = new HBox();
-        
+
         Label protein = new Label("Protein: " + totalMacros.getProtein() + "\t");
         Label carbohydrates = new Label("Carbohydrates: " + totalMacros.getCarbohydrate() + "\t");
         Label fat = new Label("Fat: " + totalMacros.getFat() + "\t");
@@ -68,12 +95,14 @@ public class App extends Application {
 
         VBox leftColumn = new VBox();
         leftColumn.getChildren().addAll(macros, ingredients);
+
+        HBox recipePage = new HBox();
+        recipePage.getChildren().addAll(leftColumn, rightColumn);
         
-        Scene scene = new Scene(leftColumn, 600, 400);
+        Scene scene = new Scene(recipePage, 600, 400);
         primaryStage.setTitle("Recipe Journal");
         primaryStage.setScene(scene);
         primaryStage.show();
-
     
     }
 
