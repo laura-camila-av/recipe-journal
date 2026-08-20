@@ -74,7 +74,7 @@ public class Recipe {
             totalCarbohydrate += m.getCarbohydrate();
     }
 
-    return new Macros(totalFat, totalProtein, totalCarbohydrate);
+        return new Macros(totalFat, totalProtein, totalCarbohydrate);
     }
 
     public double calculateTotalCalories() {

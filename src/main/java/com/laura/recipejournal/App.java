@@ -14,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import java.io.File;
 
-import java.io.File;
 import java.util.List;
 
 import javafx.scene.image.ImageView;
@@ -98,9 +97,16 @@ public class App extends Application {
         }
 
         Recipe porridge = new Recipe("Porridge", "2026-08-19");
+
         porridge.addRecipeIngredient(bananaEntry);
         porridge.addRecipeIngredient(oatsEntry);
         porridge.addRecipeIngredient(milkEntry);
+
+        Button publishButton = new Button("Publish");
+
+        publishButton.setOnAction(event -> {
+            RecipeStorage.save(porridge, "porridge.json");
+        });
 
         Label instructionsLabel = new Label(porridge.getInstructions());
         TextField instructionsTextField = new TextField();
@@ -168,7 +174,7 @@ public class App extends Application {
         });
 
         VBox appRoot = new VBox();
-        appRoot.getChildren().addAll(nameEditPane, recipePage);
+        appRoot.getChildren().addAll(nameEditPane, recipePage, publishButton);
 
         Scene scene = new Scene(appRoot, 900, 500);
         primaryStage.setTitle("Recipe Journal");
