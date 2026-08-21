@@ -2,8 +2,7 @@
 
 A personal recipe diary desktop app I made to keep track of recipes I create and like. This is a work in progress being built in Java with JavaFX. The journal contains collections of recipes, each showing ingredients, quantities, a cover photo, instructions so that when I am time poor or stuck for meal ideas I can use one I've done before.
 
-This project was built specifically to demonstrate object-oriented design in Java: a clean, composed class model sits underneath the UI, and most design decisions below were made deliberately (and sometimes revised) to reflect real OOP principles rather than just "make it work."
-
+This project was built specifically to demonstrate object-oriented design in Java.
 ## Features
 
 - **Recipe display** with a two-column layout: macros summary + ingredients on the left, cover photo + notes on the right, each independently scrollable
