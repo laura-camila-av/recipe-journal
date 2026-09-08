@@ -28,12 +28,13 @@ public class RecipeIngredient {
     public Macros calculateTotalMacros() {
         Macros perUnit = ingredient.getMacrosPerUnit();
         double qty = quantity.getAmount();
+        double scale = qty / 100.0; // macros are defined per 100g/100ml
 
-        double totalFat = perUnit.getFat() * qty;
-        double totalProtein = perUnit.getProtein() * qty;
-        double totalCarbohydrate = perUnit.getCarbohydrate() * qty;
+        double totalFat = perUnit.getFat() * scale;
+        double totalProtein = perUnit.getProtein() * scale;
+        double totalCarbohydrate = perUnit.getCarbohydrate() * scale;
 
-    return new Macros(totalFat, totalProtein, totalCarbohydrate);
+        return new Macros(totalFat, totalProtein, totalCarbohydrate);
     }
 
     public double calculateTotalCalories() {
