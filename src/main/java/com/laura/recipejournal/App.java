@@ -26,40 +26,41 @@ import com.laura.recipejournal.model.RecipeIngredient;
 
 public class App extends Application {
 
+    private static final String RECIPES_FILE = "recipes.json";
+
     @Override
     public void start(Stage primaryStage) {
-        //NEWWWW
         ImageView coverImageView = new ImageView();
         coverImageView.setFitWidth(300);
         coverImageView.setFitHeight(200);
         coverImageView.setPreserveRatio(true);
 
-        File savedFile = new File("porridge.json");
-        Recipe porridge;
+        List<Recipe> recipes = RecipeStorage.load(RECIPES_FILE);
 
-        Macros bananaMacros = new Macros(0.3, 1.3, 27);
-        Ingredient banana = new Ingredient("Banana", bananaMacros);
-        Quantity bananaAmount = new Quantity(120, "g");
-        RecipeIngredient bananaEntry = new RecipeIngredient(banana, bananaAmount);
+        if (recipes.isEmpty()) {
+            Recipe porridgeDefault = new Recipe("Porridge", "2026-08-19");
 
-        Macros oatsMacros = new Macros(7, 13, 66);
-        Ingredient oats = new Ingredient("Oats", oatsMacros);
-        Quantity oatsAmount = new Quantity(50, "g");
-        RecipeIngredient oatsEntry = new RecipeIngredient(oats, oatsAmount);
+            Macros bananaMacros = new Macros(0.3, 1.3, 27);
+            Ingredient banana = new Ingredient("Banana", bananaMacros);
+            Quantity bananaAmount = new Quantity(120, "g");
+            porridgeDefault.addRecipeIngredient(new RecipeIngredient(banana, bananaAmount));
 
-        Macros milkMacros = new Macros(3, 3, 5);
-        Ingredient milk = new Ingredient("Milk", milkMacros);
-        Quantity milkAmount = new Quantity(150, "ml");
-        RecipeIngredient milkEntry = new RecipeIngredient(milk, milkAmount);
+            Macros oatsMacros = new Macros(7, 13, 66);
+            Ingredient oats = new Ingredient("Oats", oatsMacros);
+            Quantity oatsAmount = new Quantity(50, "g");
+            porridgeDefault.addRecipeIngredient(new RecipeIngredient(oats, oatsAmount));
 
-        if (savedFile.exists()) {
-            porridge = RecipeStorage.load("porridge.json");
-        } else {
-            porridge = new Recipe("Porridge", "2026-08-19");
-            porridge.addRecipeIngredient(bananaEntry);
-            porridge.addRecipeIngredient(oatsEntry);
-            porridge.addRecipeIngredient(milkEntry);
+            Macros milkMacros = new Macros(3, 3, 5);
+            Ingredient milk = new Ingredient("Milk", milkMacros);
+            Quantity milkAmount = new Quantity(150, "ml");
+            porridgeDefault.addRecipeIngredient(new RecipeIngredient(milk, milkAmount));
+
+            recipes.add(porridgeDefault);
         }
+
+        // TEMPORARY: display the first recipe only, until the home screen
+        // and navigation between recipes exists.
+        Recipe porridge = recipes.get(0);
 
         Label coverImageLabel = new Label("Cover Image");
 
@@ -72,12 +73,13 @@ public class App extends Application {
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
             );
 
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
 
-        if (selectedFile != null) {
-            Image image = new Image(selectedFile.toURI().toString());
-            coverImageView.setImage(image);
-        }
+            if (selectedFile != null) {
+                Image image = new Image(selectedFile.toURI().toString());
+                coverImageView.setImage(image);
+                porridge.setCoverPhoto(selectedFile.toURI().toString());
+            }
         });
 
         VBox imageBox = new VBox();
@@ -97,11 +99,8 @@ public class App extends Application {
 
         VBox rightColumn = new VBox();
         rightColumn.getChildren().addAll(imageBox, notes);
-        //NEWWWW
+
         VBox ingredients = new VBox();
-        List<RecipeIngredient> porridgeIngredients = List.of(bananaEntry, oatsEntry, milkEntry);
-
-
         for (RecipeIngredient ri : porridge.getRecipeIngredients()) {
             Label label = new Label(ri.toString());
             ingredients.getChildren().add(label);
@@ -110,7 +109,7 @@ public class App extends Application {
         Button publishButton = new Button("Publish");
 
         publishButton.setOnAction(event -> {
-            RecipeStorage.save(porridge, "porridge.json");
+            RecipeStorage.save(recipes, RECIPES_FILE);
         });
 
         Label instructionsLabel = new Label(porridge.getInstructions());
@@ -121,9 +120,9 @@ public class App extends Application {
         instructionsEditPane.getChildren().addAll(instructionsLabel, instructionsTextField);
 
         instructionsLabel.setOnMouseClicked(event -> {
-        instructionsTextField.setText(instructionsLabel.getText());
-        instructionsTextField.setVisible(true);
-        instructionsLabel.setVisible(false);
+            instructionsTextField.setText(instructionsLabel.getText());
+            instructionsTextField.setVisible(true);
+            instructionsLabel.setVisible(false);
         });
 
         instructionsTextField.setOnAction(event -> {
@@ -141,11 +140,7 @@ public class App extends Application {
         Label carbohydrates = new Label("Carbohydrates: " + totalMacros.getCarbohydrate() + "\t");
         Label fat = new Label("Fat: " + totalMacros.getFat() + "\t");
 
-        macros.getChildren().addAll(
-            protein,
-            carbohydrates,
-            fat
-        );
+        macros.getChildren().addAll(protein, carbohydrates, fat);
 
         VBox leftColumn = new VBox();
         leftColumn.getChildren().addAll(macros, instructionsEditPane, ingredients);
@@ -178,7 +173,7 @@ public class App extends Application {
             nameTextField.setVisible(false);
             nameLabel.setVisible(true);
         });
-        
+
         VBox appRoot = new VBox();
         appRoot.getChildren().addAll(nameEditPane, recipePage, publishButton);
 
@@ -186,13 +181,9 @@ public class App extends Application {
         primaryStage.setTitle("Recipe Journal");
         primaryStage.setScene(scene);
         primaryStage.show();
-    
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 }
-//stage = top level container
-//scene is added to stage = drawing surface for graphical content
-//scene
