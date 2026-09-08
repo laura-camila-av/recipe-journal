@@ -1,3 +1,14 @@
 .sidebar {
     -fx-background-color: #D5FFAB;
 }
+
+.section-heading {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.ingredient-form {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+}

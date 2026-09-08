@@ -11,14 +11,18 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 
 /**
  * The recipe detail / edit screen: macros summary + ingredients on the
@@ -80,9 +84,6 @@ public class RecipeDetailScreen extends StackPane {
             notes.getChildren().add(noteLabel);
         }
 
-        VBox rightColumn = new VBox();
-        rightColumn.getChildren().addAll(imageBox, notes);
-
         VBox ingredients = new VBox();
 
         for (RecipeIngredient ri : recipe.getRecipeIngredients()) {
@@ -96,36 +97,61 @@ public class RecipeDetailScreen extends StackPane {
         Button publishButton = new Button("Publish");
         publishButton.setOnAction(event -> onPublish.run());
 
-        Label instructionsLabel = new Label(recipe.getInstructions());
-        TextField instructionsTextField = new TextField();
-        instructionsTextField.setVisible(false);
+        Label instructionsLabel = new Label(
+            recipe.getInstructions().isEmpty() ? "Double click to add instructions." : recipe.getInstructions()
+        );
+
+        instructionsLabel.setWrapText(true);
+
+        TextArea instructionsTextArea = new TextArea();
+        instructionsTextArea.setVisible(false);
+        instructionsTextArea.setWrapText(true);
 
         StackPane instructionsEditPane = new StackPane();
-        instructionsEditPane.getChildren().addAll(instructionsLabel, instructionsTextField);
+        instructionsEditPane.setMinHeight(60);
+        instructionsEditPane.getChildren().addAll(instructionsLabel, instructionsTextArea);
 
-        instructionsLabel.setOnMouseClicked(event -> {
-            instructionsTextField.setText(instructionsLabel.getText());
-            instructionsTextField.setVisible(true);
-            instructionsLabel.setVisible(false);
+        instructionsEditPane.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && !instructionsTextArea.isVisible()) {
+                instructionsTextArea.setText(recipe.getInstructions());
+                instructionsTextArea.setVisible(true);
+                instructionsLabel.setVisible(false);
+                instructionsTextArea.requestFocus();
+            }
         });
 
-        instructionsTextField.setOnAction(event -> {
-            recipe.editInstruction(instructionsTextField.getText());
-            instructionsLabel.setText(recipe.getInstructions());
-            instructionsTextField.setVisible(false);
-            instructionsLabel.setVisible(true);
+        instructionsTextArea.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER && !event.isShiftDown()) {
+                event.consume();
+                recipe.editInstruction(instructionsTextArea.getText());
+                instructionsLabel.setText(
+                    recipe.getInstructions().isEmpty() ? "Double click to add instructions." : recipe.getInstructions()
+                );
+                instructionsTextArea.setVisible(false);
+                instructionsLabel.setVisible(true);
+            }
         });
+
+        VBox rightColumn = new VBox();
+        rightColumn.getChildren().addAll(imageBox, instructionsEditPane);
 
         Macros totalMacros = recipe.calculateTotalMacros();
+        double totalCalories = recipe.calculateTotalCalories();
 
         HBox macros = new HBox();
         Label protein = new Label("Protein: " + totalMacros.getProtein() + "\t");
         Label carbohydrates = new Label("Carbohydrates: " + totalMacros.getCarbohydrate() + "\t");
         Label fat = new Label("Fat: " + totalMacros.getFat() + "\t");
-        macros.getChildren().addAll(protein, carbohydrates, fat);
+        Label calories = new Label("Calories: " + totalCalories);
+        macros.getChildren().addAll(protein, carbohydrates, fat, calories);
+
+        Label ingredientsHeading = new Label("Ingredients");
+        ingredientsHeading.getStyleClass().add("section-heading");
 
         VBox leftColumn = new VBox();
-        leftColumn.getChildren().addAll(macros, instructionsEditPane, ingredients);
+        leftColumn.setPadding(new Insets(15));
+        leftColumn.setSpacing(8);
+        leftColumn.getChildren().addAll(macros, ingredientsHeading, ingredients);
 
         ScrollPane leftScrollPane = new ScrollPane();
         leftScrollPane.setContent(leftColumn);
