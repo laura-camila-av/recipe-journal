@@ -8,3 +8,10 @@ C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\model\Quanti
 C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\model\Recipe.java
 C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\model\RecipeIngredient.java
 C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\RecipeStorage.java
+C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\ui\HomeScreen.java
+C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\ui\IngredientFormOverlay.java
+C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\ui\IngredientRow.java
+C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\ui\RecipeDetailScreen.java
+C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\ui\RecipeTile.java
+C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\ui\Router.java
+C:\Users\laura\recipe-journal\src\main\java\com\laura\recipejournal\ui\Sidebar.java

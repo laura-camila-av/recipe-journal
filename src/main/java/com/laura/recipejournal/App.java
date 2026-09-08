@@ -1,28 +1,13 @@
 package com.laura.recipejournal;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.stage.FileChooser;
-import java.io.File;
+import com.laura.recipejournal.model.Recipe;
+import com.laura.recipejournal.ui.Router;
 
 import java.util.List;
 
-import javafx.scene.image.ImageView;
-
-import com.laura.recipejournal.model.Ingredient;
-import com.laura.recipejournal.model.Macros;
-import com.laura.recipejournal.model.Quantity;
-import com.laura.recipejournal.model.Recipe;
-import com.laura.recipejournal.model.RecipeIngredient;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class App extends Application {
 
@@ -30,154 +15,13 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        ImageView coverImageView = new ImageView();
-        coverImageView.setFitWidth(300);
-        coverImageView.setFitHeight(200);
-        coverImageView.setPreserveRatio(true);
-
         List<Recipe> recipes = RecipeStorage.load(RECIPES_FILE);
 
-        if (recipes.isEmpty()) {
-            Recipe porridgeDefault = new Recipe("Porridge", "2026-08-19");
+        Router router = new Router(primaryStage, recipes, RECIPES_FILE);
+        router.showHome();
 
-            Macros bananaMacros = new Macros(0.3, 1.3, 27);
-            Ingredient banana = new Ingredient("Banana", bananaMacros);
-            Quantity bananaAmount = new Quantity(120, "g");
-            porridgeDefault.addRecipeIngredient(new RecipeIngredient(banana, bananaAmount));
-
-            Macros oatsMacros = new Macros(7, 13, 66);
-            Ingredient oats = new Ingredient("Oats", oatsMacros);
-            Quantity oatsAmount = new Quantity(50, "g");
-            porridgeDefault.addRecipeIngredient(new RecipeIngredient(oats, oatsAmount));
-
-            Macros milkMacros = new Macros(3, 3, 5);
-            Ingredient milk = new Ingredient("Milk", milkMacros);
-            Quantity milkAmount = new Quantity(150, "ml");
-            porridgeDefault.addRecipeIngredient(new RecipeIngredient(milk, milkAmount));
-
-            recipes.add(porridgeDefault);
-        }
-
-        // TEMPORARY: display the first recipe only, until the home screen
-        // and navigation between recipes exists.
-        Recipe porridge = recipes.get(0);
-
-        Label coverImageLabel = new Label("Cover Image");
-
-        Button chooseImageButton = new Button("Choose Image");
-
-        chooseImageButton.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Choose Cover Image");
-            fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-            );
-
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
-
-            if (selectedFile != null) {
-                Image image = new Image(selectedFile.toURI().toString());
-                coverImageView.setImage(image);
-                porridge.setCoverPhoto(selectedFile.toURI().toString());
-            }
-        });
-
-        VBox imageBox = new VBox();
-        imageBox.getChildren().addAll(coverImageLabel, coverImageView, chooseImageButton);
-
-        List<String> porridgeNotes = List.of(
-            "Notes notes notes xxx xxxxx xxx",
-            "Notes notes notes xxx xxxxx xxx",
-            "Notes notes notes xxx xxxxx xxx"
-        );
-
-        VBox notes = new VBox();
-        for (String note : porridgeNotes) {
-            Label noteLabel = new Label("• " + note);
-            notes.getChildren().add(noteLabel);
-        }
-
-        VBox rightColumn = new VBox();
-        rightColumn.getChildren().addAll(imageBox, notes);
-
-        VBox ingredients = new VBox();
-        for (RecipeIngredient ri : porridge.getRecipeIngredients()) {
-            Label label = new Label(ri.toString());
-            ingredients.getChildren().add(label);
-        }
-
-        Button publishButton = new Button("Publish");
-
-        publishButton.setOnAction(event -> {
-            RecipeStorage.save(recipes, RECIPES_FILE);
-        });
-
-        Label instructionsLabel = new Label(porridge.getInstructions());
-        TextField instructionsTextField = new TextField();
-        instructionsTextField.setVisible(false);
-
-        StackPane instructionsEditPane = new StackPane();
-        instructionsEditPane.getChildren().addAll(instructionsLabel, instructionsTextField);
-
-        instructionsLabel.setOnMouseClicked(event -> {
-            instructionsTextField.setText(instructionsLabel.getText());
-            instructionsTextField.setVisible(true);
-            instructionsLabel.setVisible(false);
-        });
-
-        instructionsTextField.setOnAction(event -> {
-            porridge.editInstruction(instructionsTextField.getText());
-            instructionsLabel.setText(porridge.getInstructions());
-            instructionsTextField.setVisible(false);
-            instructionsLabel.setVisible(true);
-        });
-
-        Macros totalMacros = porridge.calculateTotalMacros();
-
-        HBox macros = new HBox();
-
-        Label protein = new Label("Protein: " + totalMacros.getProtein() + "\t");
-        Label carbohydrates = new Label("Carbohydrates: " + totalMacros.getCarbohydrate() + "\t");
-        Label fat = new Label("Fat: " + totalMacros.getFat() + "\t");
-
-        macros.getChildren().addAll(protein, carbohydrates, fat);
-
-        VBox leftColumn = new VBox();
-        leftColumn.getChildren().addAll(macros, instructionsEditPane, ingredients);
-
-        ScrollPane leftScrollPane = new ScrollPane();
-        leftScrollPane.setContent(leftColumn);
-
-        ScrollPane rightScrollPane = new ScrollPane();
-        rightScrollPane.setContent(rightColumn);
-
-        HBox recipePage = new HBox();
-        recipePage.getChildren().addAll(leftScrollPane, rightScrollPane);
-
-        Label nameLabel = new Label(porridge.getName());
-        TextField nameTextField = new TextField();
-        nameTextField.setVisible(false);
-
-        StackPane nameEditPane = new StackPane();
-        nameEditPane.getChildren().addAll(nameLabel, nameTextField);
-
-        nameLabel.setOnMouseClicked(event -> {
-            nameTextField.setText(nameLabel.getText());
-            nameTextField.setVisible(true);
-            nameLabel.setVisible(false);
-        });
-
-        nameTextField.setOnAction(event -> {
-            porridge.setName(nameTextField.getText());
-            nameLabel.setText(porridge.getName());
-            nameTextField.setVisible(false);
-            nameLabel.setVisible(true);
-        });
-
-        VBox appRoot = new VBox();
-        appRoot.getChildren().addAll(nameEditPane, recipePage, publishButton);
-
-        Scene scene = new Scene(appRoot, 900, 500);
+        Scene scene = new Scene(router.getRoot(), 900, 500);
+        scene.getStylesheets().add(getClass().getResource("/css/app.css").toExternalForm());
         primaryStage.setTitle("Recipe Journal");
         primaryStage.setScene(scene);
         primaryStage.show();

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.laura.recipejournal.model.Recipe;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,7 +53,12 @@ public class RecipeStorage {
      * safely iterate or add to the result without a null check.
      */
     public static List<Recipe> load(String filePath) {
-        try (FileReader reader = new FileReader(filePath)) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return new ArrayList<>();
+        }
+
+        try (FileReader reader = new FileReader(file)) {
             List<Recipe> recipes = gson.fromJson(reader, RECIPE_LIST_TYPE);
             return recipes != null ? recipes : new ArrayList<>();
         } catch (IOException e) {

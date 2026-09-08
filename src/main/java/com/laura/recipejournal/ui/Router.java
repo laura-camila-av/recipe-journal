@@ -48,7 +48,7 @@ public class Router {
     }
 
     public void showRecipe(Recipe recipe) {
-        RecipeDetailScreen detailScreen = new RecipeDetailScreen(recipe, stage, this::publish);
+        RecipeDetailScreen detailScreen = new RecipeDetailScreen(recipe, stage, this::publish, () -> showRecipe(recipe));
         root.setCenter(detailScreen);
     }
 

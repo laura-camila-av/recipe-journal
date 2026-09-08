@@ -23,14 +23,17 @@ import javafx.stage.Stage;
 /**
  * The recipe detail / edit screen: macros summary + ingredients on the
  * left, cover photo + notes on the right, each independently scrollable.
- * Tap-to-edit for the name and instructions, matching the current
- * (single-recipe) behavior — this is a straight extraction of the UI that
- * used to live in {@code App.start()}, not a redesign.
+ * Tap-to-edit for the name and instructions.
+ * <p>
+ * Extends {@link StackPane} (rather than a plain layout container) so the
+ * ingredient add/edit form can float on top of the page content as an
+ * overlay, matching the design sketch, without needing a separate window.
  */
-public class RecipeDetailScreen extends VBox {
+public class RecipeDetailScreen extends StackPane {
 
-    public RecipeDetailScreen(Recipe recipe, Stage stage, Runnable onPublish) {
-        setPadding(new Insets(10));
+    public RecipeDetailScreen(Recipe recipe, Stage stage, Runnable onPublish, Runnable onRecipeChanged) {
+        VBox mainContent = new VBox();
+        mainContent.setPadding(new Insets(10));
 
         ImageView coverImageView = new ImageView();
         coverImageView.setFitWidth(300);
@@ -81,10 +84,14 @@ public class RecipeDetailScreen extends VBox {
         rightColumn.getChildren().addAll(imageBox, notes);
 
         VBox ingredients = new VBox();
+
         for (RecipeIngredient ri : recipe.getRecipeIngredients()) {
-            Label label = new Label(ri.toString());
-            ingredients.getChildren().add(label);
+            IngredientRow row = new IngredientRow(ri, () -> showIngredientForm(recipe, ri, onRecipeChanged));
+            ingredients.getChildren().add(row);
         }
+
+        IngredientRow addRow = new IngredientRow(null, () -> showIngredientForm(recipe, null, onRecipeChanged));
+        ingredients.getChildren().add(addRow);
 
         Button publishButton = new Button("Publish");
         publishButton.setOnAction(event -> onPublish.run());
@@ -149,6 +156,32 @@ public class RecipeDetailScreen extends VBox {
             nameLabel.setVisible(true);
         });
 
-        getChildren().addAll(nameEditPane, recipePage, publishButton);
+        mainContent.getChildren().addAll(nameEditPane, recipePage, publishButton);
+
+        getChildren().add(mainContent);
+    }
+
+    /**
+     * Opens the ingredient add/edit form as an overlay on top of the page.
+     * Pass {@code existing} as null to add a new ingredient, or an existing
+     * {@link RecipeIngredient} to edit it. Either way, submitting or
+     * cancelling removes the overlay; submitting also triggers
+     * {@code onRecipeChanged} so the caller can rebuild the screen with the
+     * updated data.
+     */
+    private void showIngredientForm(Recipe recipe, RecipeIngredient existing, Runnable onRecipeChanged) {
+        IngredientFormOverlay[] overlayHolder = new IngredientFormOverlay[1];
+
+        Runnable close = () -> getChildren().remove(overlayHolder[0]);
+
+        IngredientFormOverlay overlay = new IngredientFormOverlay(
+            recipe,
+            existing,
+            () -> { close.run(); onRecipeChanged.run(); },
+            close
+        );
+
+        overlayHolder[0] = overlay;
+        getChildren().add(overlay);
     }
 }

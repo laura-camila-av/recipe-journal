@@ -25,16 +25,14 @@ public class RecipeIngredient {
         this.quantity = quantity;
     }
 
+    /**
+    * Returns this ingredient entry's total macros. Since {@link Ingredient}
+    * stores the total macros for the amount actually used (not a reusable
+    * per-unit rate), this is simply the ingredient's macros as entered — no
+    * scaling by {@link Quantity} is needed or performed.
+     */
     public Macros calculateTotalMacros() {
-        Macros perUnit = ingredient.getMacrosPerUnit();
-        double qty = quantity.getAmount();
-        double scale = qty / 100.0; // macros are defined per 100g/100ml
-
-        double totalFat = perUnit.getFat() * scale;
-        double totalProtein = perUnit.getProtein() * scale;
-        double totalCarbohydrate = perUnit.getCarbohydrate() * scale;
-
-        return new Macros(totalFat, totalProtein, totalCarbohydrate);
+        return ingredient.getMacros();
     }
 
     public double calculateTotalCalories() {

@@ -16,17 +16,19 @@ import javafx.scene.layout.VBox;
 public class Sidebar extends VBox {
 
     public Sidebar(Runnable onHome, Runnable onAdd) {
-        setAlignment(Pos.TOP_CENTER);
-        setSpacing(10);
-        setPadding(new Insets(10));
-        setPrefWidth(80);
+    getStyleClass().add("sidebar");
 
-        Button homeButton = new Button("Home");
-        homeButton.setOnAction(event -> onHome.run());
+    setAlignment(Pos.TOP_CENTER);
+    setSpacing(10);
+    setPadding(new Insets(10));
+    setPrefWidth(80);
 
-        Button addButton = new Button("+");
-        addButton.setOnAction(event -> onAdd.run());
+    Button homeButton = new Button("Home");
+    homeButton.setOnAction(event -> onHome.run());
 
-        getChildren().addAll(homeButton, addButton);
+    Button addButton = new Button("+");
+    addButton.setOnAction(event -> onAdd.run());
+
+    getChildren().addAll(homeButton, addButton);
     }
 }
